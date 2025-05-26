@@ -21,6 +21,8 @@ Escuela de ciencias e ingeniería
 Universidad EAFIT, sede Medellín
 2025-1
 
+# Video
+
 # Introducción
 
 Este proyecto tiene como propósito implementar una arquitectura batch automatizada para Big Data, que abarque todo el ciclo de vida de los datos: captura desde múltiples fuentes (archivos, APIs y bases de datos), ingesta hacía S3, procesamiento con Spark en clústeres EMR y entrega de resultados para su consulta mediante Athena o API Gateway.
