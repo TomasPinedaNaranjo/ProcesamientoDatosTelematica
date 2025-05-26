@@ -73,7 +73,7 @@ La ingesta de datos es el proceso mediante el cual se recolectan y trasladan dat
 
 ![Captura de pantalla (178)](https://github.com/user-attachments/assets/f9dc5d69-dd8a-4ea8-8c64-46438c94093a)
 
-### 1. Extraer datos de la API
+## 1. Extraer datos de la API
 
 Uso de un bot automatizado: Implementar una clase (FakeStoreBot) que gestione las solicitudes HTTP a la API y facilite la extracción de datos.
 Manejo de errores: Validar las respuestas de la API y gestionar adecuadamente los posibles errores o códigos de estado inesperados.
@@ -81,13 +81,13 @@ Flexibilidad en la extracción: Permitir la obtención de todos los productos, p
 
 Para lograr esto hacemos uso del método get_all_products() de la clase FakeStoreBot para realizar una solicitud HTTP a la API y obtener todos los productos en formato JSON.
 
-### 2. Guardar datos
+## 2. Guardar datos
 
 Formato estructurado: Almacenar los datos extraídos en archivos de texto con formato JSON para facilitar su posterior procesamiento.
 Nombres de archivo claros: Utilizar nombres de archivo descriptivos y, si es necesario, incluir marcas de tiempo para identificar diferentes lotes de datos.
 Para lograr está tarea tenemos el método save_to_file(data, filename) de la clase FakeStoreBot para guardar los datos extraídos en un archivo de texto con formato JSON y codificación UTF-8.
 
-### 3. Montar datos a S3
+## 3. Montar datos a S3
 
 Automatización del proceso: Implementar scripts o funciones que suban automáticamente los archivos generados a un bucket de S3.
 
@@ -99,7 +99,7 @@ Como último objetivo de este fragmento hacemos uso de la función upload_to_s3(
 
 Para montar este proceso crearemos una máquina EC2 donde montaremos nuestro proyecto para que el bot se pueda ejecutar eventualmente en la hora establecida periódicamente y asi obtener los dato actualizados para todo el proceso que estamos realizando.
 
-# 1. Creación de la Instancia EC2
+### 1. Creación de la Instancia EC2
 
 1.1 Configuración Básica
 Ingresar a AWS Console y navegar al servicio EC2
@@ -113,7 +113,7 @@ Security Group:
 Permitir SSH (puerto 22) desde tu IP
 Opcional: HTTP (80) y HTTPS (443)
 
-# 2. Nos conectamos a la máquina y ejecutamos
+### 2. Nos conectamos a la máquina y ejecutamos
    
 #Actualizar paquetes del sistema 
 
@@ -158,7 +158,7 @@ Copiamos las credenciales y las pegamos en nuestro .env usando
 
 nano .venv
 
-Hacer un cron para ejecutar periódicamente el bot
+# 4. Hacer un cron para ejecutar periódicamente el bot
 
 Para lograr esta tarea realizaremos los siguientes pasos
 
