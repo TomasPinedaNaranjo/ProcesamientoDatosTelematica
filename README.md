@@ -211,3 +211,11 @@ crontab -l
 
 sudo systemctl status cron
 
+
+# Procesamiento de datos
+
+# Análisis de datos
+
+# Referencias
+
+https://www.youtube.com/watch?v=ACmQGfCzjkc
