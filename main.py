@@ -15,7 +15,6 @@ def main():
     # Subir archivo a S3 usando upload_file.py
     s3_key = f"raw/{filename}"  # O la ruta que desees
     upload_file.upload_to_s3(filename, upload_file.bucket_name, s3_key)
-    print(f"Archivo {filename} subido exitosamente a {upload_file.bucket_name}/{s3_key}")
-
+    
 if __name__ == "__main__":
     main()
