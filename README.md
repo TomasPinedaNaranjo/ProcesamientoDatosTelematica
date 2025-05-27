@@ -68,6 +68,33 @@ RNF2: El sistema debe ser escalable y soportar incrementos en el volumen de dato
 
 RNF3: El sistema debe estar desarrollado sobre servicios en la nube con alta disponibilidad, priorizando el uso de AWS, GCP o Azure según la viabilidad técnica.
 
+# Creación EMR
+
+## 1. En AWS buscamos e ingresamos a la seccion de EMR. En el menu de la izquierda ingresamos a Clusers y seleccionamos "crear cluster". Alli seleccionamos la siguiente informacion:
+
+![Captura de pantalla 2025-05-27 a la(s) 11 37 24 a m](https://github.com/user-attachments/assets/f64f7b62-72d9-43f5-becb-849fdbd594ca)
+
+![Captura de pantalla 2025-05-27 a la(s) 11 38 31 a m](https://github.com/user-attachments/assets/eca2166e-8ebb-497f-a7cc-20e450206330)
+
+![Captura de pantalla 2025-05-27 a la(s) 11 38 38 a m](https://github.com/user-attachments/assets/e53e612e-b30a-4e33-b040-3cae47692d41)
+
+![Captura de pantalla 2025-05-27 a la(s) 11 38 46 a m](https://github.com/user-attachments/assets/d1dd08c5-f394-4aae-bfcc-a4a4d671a152)
+
+Las secciones que no se ven en las fotos las dejamos como vienen de serie. (La seccion de pasos (Steps) la modificaremos mas tarde)
+
+Luego oprimimos el boton de "Crear Cluseter" y esperamos aproximadamente 20 minutos hasta que se inicialice el cluster.
+
+## 2. Buscamos y la seccion de EC2 e ingresamos a la opcion de 'security groups'. Alli buscamos el grupo de nuetro cluster, generalmente es el que se llama 'ElasticMapReduce-master'. Editamos las reglas de entrada y las dejamos asi:
+
+![Captura de pantalla 2025-05-27 a la(s) 12 18 59 p m](https://github.com/user-attachments/assets/8d44f8b1-d83b-4c5a-ad58-32ec4b41d7fd)
+
+# Creacion S3
+
+## 1. En AWS buscamos e ingresamos a la seccion S3. Luego oprimimos el boton de 'Crear Bucker' y dejamos todas las opciones como vienen de serie.
+
+## 2. Ingresamos al Bucker creado y creamos 4 carpeta que usaremos mas tarde: 'raw', 'trusted', 'refined', 'scripts'
+
+![Captura de pantalla 2025-05-27 a la(s) 12 00 30 p m](https://github.com/user-attachments/assets/fef2e203-3749-464c-8a58-f40884c0282a)
 
 # Ingesta de datos
 
@@ -89,7 +116,9 @@ Formato estructurado: Almacenar los datos extraídos en archivos de texto con fo
 Nombres de archivo claros: Utilizar nombres de archivo descriptivos y, si es necesario, incluir marcas de tiempo para identificar diferentes lotes de datos.
 Para lograr está tarea tenemos el método save_to_file(data, filename) de la clase FakeStoreBot para guardar los datos extraídos en un archivo de texto con formato JSON y codificación UTF-8.
 
-## 3. Montar datos a S3
+## 3. Montar datos a S3 
+
+#### Datos desde la API
 
 Automatización del proceso: Implementar scripts o funciones que suban automáticamente los archivos generados a un bucket de S3.
 
@@ -213,10 +242,42 @@ crontab -l
 
 sudo systemctl status cron
 
+## Extraer datos de la DB
 
-# Procesamiento de datos
+El siguiente paso es extraer los datos de una base de datos, en este caso utilizamos Hive ya que cuenta con integracion completa con Spark y mermite hacer consultas al estilo SQL.
+
+Para lograrlo, creamos 2 Scripts que luego usaremos como Steps en nuestro EMR:
+
+Creacion de Hive y Creacion de datos:
+
+![Captura de pantalla 2025-05-27 a la(s) 11 52 03 a m](https://github.com/user-attachments/assets/4ff35425-ddf0-4b69-9c46-498e6a8f9559)
+
+![Captura de pantalla 2025-05-27 a la(s) 11 52 24 a m](https://github.com/user-attachments/assets/4802873b-daad-42f3-ac4f-fe706fb0b328)
+
+Como vemos, el primer Script se encrga de crear Hive y el segundo simula la obtencion de datos de esta Base de datos y los ingresa en la Zona 'Raw' dentro del S3
+
+Ambos scrpts debemos descargarlos como archivos de Python (.py) y subirlos en la carpeta 'scripts' dentro de nuetro S3
+
+# Preparacion y union de los datos
+
+Para este paso creamos otro script que se encargará de obtener de la zona 'raw' dentro del S3 los datos sacados tanto de la API como de Hive para unirlos en un mismo archivo que montará a la zona 'trusted' dentro de S3 para posteriormente poder procesar y analizar estos datos:
+
+![Captura de pantalla 2025-05-27 a la(s) 12 06 44 p m](https://github.com/user-attachments/assets/ebb982cd-c9f2-4126-a790-c3c20929a1f1)
+
+Nuevamente, dememos descargar este script como arhivo Python (.py) e ingresarlo en la carpeta 'scripts' dentro de AWS.
 
 # Análisis de datos
+
+# Implementación de Steps
+
+Demos volver a la seccion de EMR e ingresar al cluster previament encendido (o darle a clonar a alguno antiguo). Alli vamos a la seccion de Pasos y oprimimos el boton de 'Agregar'. Ahora debemos añadir los diferentes scripts teniendo en cuenta el correcto orden: 
+
+1. Creacion de Hive
+2. Inserción de datos Hive
+3. Union y preparcion de datos
+4. Analisis datos
+
+Luego de esto, debermos ver como los diferentes pasos se van ejecutando y completando uno detras del otro.
 
 # Referencias
 
