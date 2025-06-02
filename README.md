@@ -23,6 +23,8 @@ Universidad EAFIT, sede Medellín
 
 # Video
 
+https://www.youtube.com/watch?v=7asQj6IsRXo
+
 # Introducción
 
 Este proyecto tiene como propósito implementar una arquitectura batch automatizada para Big Data, que abarque todo el ciclo de vida de los datos: captura desde múltiples fuentes (archivos, APIs y bases de datos), ingesta hacía S3, procesamiento con Spark en clústeres EMR y entrega de resultados para su consulta mediante Athena o API Gateway.
@@ -278,6 +280,41 @@ Demos volver a la seccion de EMR e ingresar al cluster previament encendido (o d
 4. Analisis datos
 
 Luego de esto, debermos ver como los diferentes pasos se van ejecutando y completando uno detras del otro.
+
+# Procesamiento y análisis de datos
+
+
+El objetivo de esta parte es procesar los datos limpios ubicados en la zona Trusted de nuestro bucket S3, aplicar un análisis descriptivo con Apache Spark en Amazon EMR y por último almacenar los resultados en la zona refined.
+
+Para iniciar, creamos el archivo trusted_an.py que será el script que utilizaremos. 
+
+![Screenshot 2025-06-01 211338](https://github.com/user-attachments/assets/88e2ae0d-9381-496a-a32e-2f7ea7207784)
+
+Este script se encarga de:
+- Leer los datos en formato JSON desde la zona Trusted.
+- Realizar un análisis descriptivo: cálculo del promedio de precios y cantidad de productos por categoría.
+- Guardar el resultado en formato JSON en la zona Refined.
+
+Posteriormente, subimos este script a la zona de scripts en nuestro S3.
+
+![Screenshot 2025-06-01 211525](https://github.com/user-attachments/assets/e8db61b7-832b-4707-a836-b0271cae6aa1)
+
+Luego, creamos el paso correspondiente en nuestro cluster EMR. Este paso ejecuta el script cargado anteriormente:
+
+![Screenshot 2025-06-01 211645](https://github.com/user-attachments/assets/e64aa9aa-ba1e-4850-80b6-5ae6a36e7eac)
+
+Ahora vemos que en la zona refined de nuestro S3 se crea el archivo de salida como resultado del análisis realizado con Spark. Y además visualizamos la estructura de este archivo con la información obtenida y útil para ser consumida en futuros usos.
+
+![Screenshot 2025-06-01 211719](https://github.com/user-attachments/assets/cbf9ced8-4160-4410-ad0d-a42ecdd30153)
+
+En esta etapa del proyecto, logramos implementar exitosamente el procesamiento y análisis automatizado de los datos limpios ubicados en la zona Trusted del bucket S3. Para ello, desarrollamos un script en PySpark que permitió aplicar un análisis descriptivo sobre los datos, específicamente el cálculo del promedio de precios y cantidad de productos por categoría. Este script fue ejecutado de forma automática en un clúster de Amazon EMR, el cual fue configurado para correr tareas de procesamiento distribuido con Apache Spark.
+
+Posteriormente, los resultados del análisis fueron almacenados en la zona Refined del mismo bucket S3, dejando los datos disponibles y estructurados para su consulta posterior mediante herramientas como Amazon Athena o APIs. Este paso integra servicios clave del ecosistema AWS como S3, EMR, Spark y CLI, demostrando una arquitectura batch automatizada capaz de procesar grandes volúmenes de datos en un entorno controlado y reproducible.
+
+Con esto, completamos la etapa de análisis del ciclo de vida de datos y dejamos el sistema listo para que los resultados puedan ser consultados o integrados con sistemas de visualización o consumo externo.
+
+
+
 
 # Referencias
 
